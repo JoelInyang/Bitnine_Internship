@@ -1,98 +1,98 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum TypeTag {
+typedef enum Operation {
     ADD,
     SUB,
     MUL,
     DIV
-} TypeTag;
+} Operation;
 
-typedef struct Node {
-    TypeTag type;
+typedef struct ExpressionNode {
+    Operation op;
     union {
         int value;
         struct {
-            struct Node* left;
-            struct Node* right;
+            struct ExpressionNode* left;
+            struct ExpressionNode* right;
         } operands;
     } data;
-} Node;
+} ExpressionNode;
 
-Node* makeFunc(TypeTag type) {
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->type = type;
+ExpressionNode* createNode(Operation op) {
+    ExpressionNode* newNode = (ExpressionNode*)malloc(sizeof(ExpressionNode));
+    newNode->op = op;
     newNode->data.operands.left = NULL;
     newNode->data.operands.right = NULL;
     return newNode;
 }
 
-void calc(Node* node) {
+void calculate(ExpressionNode* node) {
     if (node == NULL) {
         return;
     }
 
-    switch (node->type) {
+    switch (node->op) {
         case ADD:
-            calc(node->data.operands.left);
-            calc(node->data.operands.right);
+            calculate(node->data.operands.left);
+            calculate(node->data.operands.right);
             node->data.value = node->data.operands.left->data.value + node->data.operands.right->data.value;
             break;
         case SUB:
-            calc(node->data.operands.left);
-            calc(node->data.operands.right);
+            calculate(node->data.operands.left);
+            calculate(node->data.operands.right);
             node->data.value = node->data.operands.left->data.value - node->data.operands.right->data.value;
             break;
         case MUL:
-            calc(node->data.operands.left);
-            calc(node->data.operands.right);
+            calculate(node->data.operands.left);
+            calculate(node->data.operands.right);
             node->data.value = node->data.operands.left->data.value * node->data.operands.right->data.value;
             break;
         case DIV:
-            calc(node->data.operands.left);
-            calc(node->data.operands.right);
+            calculate(node->data.operands.left);
+            calculate(node->data.operands.right);
             node->data.value = node->data.operands.left->data.value / node->data.operands.right->data.value;
             break;
     }
 }
 
 int main() {
-    Node* add = makeFunc(ADD);
-    add->data.operands.left = makeFunc(ADD);
-    add->data.operands.left->data.operands.left = makeFunc(ADD);
+    ExpressionNode* add = createNode(ADD);
+    add->data.operands.left = createNode(ADD);
+    add->data.operands.left->data.operands.left = createNode(ADD);
     add->data.operands.left->data.operands.left->data.value = 1;
-    add->data.operands.left->data.operands.right = makeFunc(ADD);
+    add->data.operands.left->data.operands.right = createNode(ADD);
     add->data.operands.left->data.operands.right->data.value = 1;
-    add->data.operands.right = makeFunc(ADD);
-    add->data.operands.right->data.operands.left = makeFunc(ADD);
+    add->data.operands.right = createNode(ADD);
+    add->data.operands.right->data.operands.left = createNode(ADD);
     add->data.operands.right->data.operands.left->data.value = 1;
-    add->data.operands.right->data.operands.right = makeFunc(ADD);
+    add->data.operands.right->data.operands.right = createNode(ADD);
     add->data.operands.right->data.operands.right->data.value = 0;
 
-    Node* mul = makeFunc(MUL);
-    mul->data.operands.left = makeFunc(MUL);
-    mul->data.operands.left->data.operands.left = makeFunc(MUL);
+    ExpressionNode* mul = createNode(MUL);
+    mul->data.operands.left = createNode(MUL);
+    mul->data.operands.left->data.operands.left = createNode(MUL);
     mul->data.operands.left->data.operands.left->data.value = 1;
-    mul->data.operands.left->data.operands.right = makeFunc(MUL);
+    mul->data.operands.left->data.operands.right = createNode(MUL);
     mul->data.operands.left->data.operands.right->data.value = 1;
-    mul->data.operands.right = makeFunc(MUL);
-    mul->data.operands.right->data.operands.left = makeFunc(MUL);
+    mul->data.operands.right = createNode(MUL);
+    mul->data.operands.right->data.operands.left = createNode(MUL);
     mul->data.operands.right->data.operands.left->data.value = 1;
-    mul->data.operands.right->data.operands.right = makeFunc(MUL);
+    mul->data.operands.right->data.operands.right = createNode(MUL);
     mul->data.operands.right->data.operands.right->data.value = 0;
 
-    Node* sub = makeFunc(SUB);
+    ExpressionNode* sub = createNode(SUB);
     sub->data.operands.left = mul;
     sub->data.operands.right = add;
 
-    Node* fibo = makeFunc(SUB);
+    ExpressionNode* fibo = createNode(SUB);
     fibo->data.operands.left = sub;
     fibo->data.operands.right = NULL;
 
-    calc(add);
-    calc(mul);
-    calc(sub);
-    calc(fibo);
+    calculate(add);
+    calculate(mul);
+    calculate(sub);
+    calculate(fibo);
 
     printf("add : %d\n", add->data.value);
     printf("mul : %d\n", mul->data.value);
