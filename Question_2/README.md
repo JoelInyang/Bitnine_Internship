@@ -7,9 +7,9 @@ Development Environment:
 ------------------------
 The code provided in this repository has been developed and tested using the following environment:
 
-- Operating System: [Specify your operating system]
-- Compiler: [Specify your C compiler, e.g., gcc]
-- Development Environment: [Specify any specific IDE or text editor used]
+- Operating System: Windows OS
+- Compiler: gcc
+- Development Environment: VSCODE
 
 How to Compile:
 ----------------
